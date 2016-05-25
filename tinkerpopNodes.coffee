@@ -28,7 +28,8 @@ module.exports = (RED) ->
     this.database = RED.nodes.getNode(n.database)
     node = this
     @on 'input', (msg) ->
-      node.status {fill:"blue",shape:"dot",text:"Requesting"}
+      time = new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")
+      node.status {fill:"blue",shape:"dot",text:"Requesting @ "+time}
       if isTemplated
         script = mustache.render script, msg
       rest('http://'+this.database.server+':'+this.database.port+'/?gremlin='+script).then (response)->
@@ -37,17 +38,17 @@ module.exports = (RED) ->
         if json.message == undefined
           if json.status.code = 200
             msg.status = 'OK'
-            node.status {fill:"green",shape:"dot",text:"Successful"}
+            node.status {fill:"green",shape:"dot",text:"Successful @ "+time}
           else
             msg.status = 'ERROR'
-            node.status {fill:"red",shape:"dot",text:"Error"}
+            node.status {fill:"red",shape:"dot",text:"Error @ "+time}
           msg.status = json.status
           if json.result.data.length == 1
             msg.payload = json.result.data[0]
           else
             msg.payload = json.result.data
         else
-          node.status {fill:"red",shape:"dot",text:"Error"}
+          node.status {fill:"red",shape:"dot",text:"Error @ "+time}
           msg.status = 'ERROR'
           msg.payload = json.message
         node.send msg

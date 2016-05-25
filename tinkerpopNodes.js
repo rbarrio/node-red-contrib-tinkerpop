@@ -35,10 +35,12 @@
       this.database = RED.nodes.getNode(n.database);
       node = this;
       return this.on('input', function(msg) {
+        var time;
+        time = new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
         node.status({
           fill: "blue",
           shape: "dot",
-          text: "Requesting"
+          text: "Requesting @ " + time
         });
         if (isTemplated) {
           script = mustache.render(script, msg);
@@ -53,14 +55,14 @@
               node.status({
                 fill: "green",
                 shape: "dot",
-                text: "Successful"
+                text: "Successful @ " + time
               });
             } else {
               msg.status = 'ERROR';
               node.status({
                 fill: "red",
                 shape: "dot",
-                text: "Error"
+                text: "Error @ " + time
               });
             }
             msg.status = json.status;
@@ -73,7 +75,7 @@
             node.status({
               fill: "red",
               shape: "dot",
-              text: "Error"
+              text: "Error @ " + time
             });
             msg.status = 'ERROR';
             msg.payload = json.message;

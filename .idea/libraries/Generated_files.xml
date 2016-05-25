@@ -3,12 +3,12 @@
     <properties>
       <sourceFilesUrls>
         <item url="file://$PROJECT_DIR$/tinkerpopNodes.js" />
-        <item url="file://$PROJECT_DIR$/tinkerpopNodes111.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../node-contrib-tinkerpop/tinkerpopNodesWWW.js" />
       <root url="file://$PROJECT_DIR$/../node-contrib-tinkerpop/tinkerpopNodes.js" />
+      <root url="file://$PROJECT_DIR$/tinkerpopNodes.js" />
     </CLASSES>
     <SOURCES />
   </library>
