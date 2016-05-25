@@ -1,0 +1,120 @@
+<!--
+  Copyright 2016 IBM Corp.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering tinkerpop-config");
+    RED.nodes.registerType('tinkerpop-config',{
+        category: 'config',
+        defaults: {
+            server: {value:"", required:true},
+            port: {value:"", required:true}
+        },
+        label: function() {
+            return "GraphDB @ "+ this.server +':'+ this.port;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="tinkerpop-config">
+    <div class="form-row">
+        <label for="node-input-server"><i class="icon-tag"></i> Server Domain Name</label>
+        <input type="text" id="node-config-input-server" placeholder="graphdb.on.server.com">
+    </div>
+   <div class="form-row">
+        <label for="node-input-port"><i class="icon-tag"></i> Port</label>
+        <input type="text" id="node-config-input-port" placeholder="8182">
+    </div>
+
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering gremlin-query");
+    RED.nodes.registerType('gremlin-query',{
+        category: 'TinkerPop',
+        color: '#3FADB5',
+        defaults: {
+            name: {value:""},
+            database: {value:"",type:"tinkerpop-config"},
+            gremlin: {value:"g.V().next()"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "gremlin-running.png",
+        label: function() {
+            return this.name || 'Gremlin Query';
+        },
+        oneditprepare: function() {
+            var that = this;
+            this.editor = RED.editor.createEditor({
+                id: 'node-input-func-editor',
+                mode: 'ace/mode/groovy',
+                value: this.gremlin  //$("#node-input-func").val()
+            });
+            RED.library.create({
+                url:"functions", // where to get the data from
+                type:"function", // the type of object the library is for
+                editor:this.editor, // the field name the main text body goes to
+                mode:"ace/mode/groovy",
+                fields:['name']
+            });
+            this.editor.focus();
+        },
+        oneditsave: function() {
+            var annot = this.editor.getSession().getAnnotations();
+            $("#node-input-func").val(this.editor.getValue());
+            this.gremlin = this.editor.getValue();
+            delete this.editor;
+        },
+        oneditresize: function(size) {
+            var rows = $("#dialog-form>div:not(.node-text-editor-row)");
+            var height = $("#dialog-form").height();
+            for (var i=0;i<rows.size();i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#dialog-form>div.node-text-editor-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            $(".node-text-editor").css("height",height+"px");
+            this.editor.resize();
+        }
+
+    });
+</script>
+
+<script type="text/x-red" data-template-name="gremlin-query">
+    <div class="form-row">
+        <label for="node-input-database"><i class="icon-tag"></i> Database</label>
+        <input type="text" id="node-input-database" placeholder="Specify database for queries">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row node-text-editor-row">
+        <div style="height: 250px;" class="node-text-editor" id="node-input-func-editor" ></div>
+    </div>
+    <div class="form-tips"><span data-i18n="function.tip"></span></div>
+
+</script>
+
+<script type="text/x-red" data-help-name="gremlin-query">
+   <p>This node send a gremlin query to the selected Apache TinkerPop graph database and returns the results.</p>
+   <p>Gremlin scripts are written using the <a href="http://www.groovy-lang.org/groovy-dev-kit.html">Groovy language</a> and may use mustache/handlebars to embed references to msg attributes, e.g. {{{payload}}}</p>
+   <p>Outputs an object called <b>msg</b> containing <b>msg.status</b> ['OK','ERROR'] and
+   <b>msg.payload</b> which holds is the JSON result of the query.  If the query is in error, the result will contain the error for easy debugging.</p>
+   <p>See <a href="http://tinkerpop.apache.org/docs/3.1.1-incubating/reference/" target=_blank>http://tinkerpop.apache.org/docs/3.1.1-incubating/reference/</a> for details on gremlin</p>
+</script>

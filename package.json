@@ -1,0 +1,33 @@
+{
+  "author": {
+    "name": "Sam Adams",
+    "email": "ssadams@us.ibm.com"
+  },
+  "name": "node-red-contrib-tinkerpop",
+  "description": "Access Apache TinkerPop graph databases.",
+  "dependencies": {
+    "rest": "1.3.2",
+    "mustache": "2.2.1"
+  },
+  "version": "0.1.2",
+  "keywords": [
+    "node-red",
+    "tinkerpop",
+    "graphdb",
+    "gremlin",
+    "ibm"
+  ],
+  "readmeFilename": "README.md",
+  "license": "Apache-2.0",
+  "node-red": {
+    "nodes": {
+      "tinkerpop": "tinkerpopNodes.js"
+    }
+  },
+  "maintainers": [
+    {
+      "name": "Sam Adams",
+      "email": "ssadms@us.ibm.com"
+    }
+  ]
+}
