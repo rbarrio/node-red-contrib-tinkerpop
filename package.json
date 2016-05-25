@@ -4,12 +4,12 @@
     "email": "ssadams@us.ibm.com"
   },
   "name": "node-red-contrib-tinkerpop",
-  "description": "Access Apache TinkerPop graph databases.",
+  "description": "Node-red access for Apache TinkerPop graph databases.  See http://nodered.org for the base system.",
   "dependencies": {
     "rest": "1.3.2",
     "mustache": "2.2.1"
   },
-  "version": "0.1.6",
+  "version": "0.1.8",
   "keywords": [
     "node-red",
     "tinkerpop",
